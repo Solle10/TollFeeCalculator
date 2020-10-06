@@ -62,20 +62,30 @@ public class TollFeeCalculatorTests {
         assertTrue(TollFeeCalculator.isTollFreeDate(tollFreeJuly));
         
                                                                        
-@Test                                                          
-    @DisplayName("TestExceptions")                         
-    void TestExceptions() {                                    
-    try {                                                      
-        try {                                                  
-            new TollFeeCalculator("Data/Wrongdates.txt");      
-        } catch (NoSuchElementException e) {                   
-            System.err.println(e);                             
-            assertNull(e);                                     
-                     }                                         
-                     new TollFeeCalculator("Data/Emptyfile.txt"
-                }catch(DateTimeParseException e) {             
-                   System.err.println(e);                      
-                             assertNull(e);      }  }}         
+@Test                                                                         
+    @DisplayName("Test if file had wrong dates")                              
+    void TestExceptions() {                                                   
+    try {                                                                     
+         new TollFeeCalculator("Data/Wrongdates.txt");                        
+        } catch (NoSuchElementException e) {                                  
+            System.err.println(e);                                            
+            assertNull(e);                                                    
+        }                                                                     
+    }                                                                         
+                                                                              
+        @Test                                                                 
+        @DisplayName("test if file was empty")                                
+        void TestExpections() {                                               
+        try {                                                                 
+            new TollFeeCalculator("Data/Emptyfile.txt");                      
+        } catch (DateTimeParseException e) {                                  
+            System.err.println(e);                                            
+            assertNull(e);                                                    
+        }                                                                     
+                                                                              
+                                                                              
+    }                                                                         
+}                                                                             
     
 
 
