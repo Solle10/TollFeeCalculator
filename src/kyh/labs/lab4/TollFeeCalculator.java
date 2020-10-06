@@ -1,28 +1,39 @@
 package kyh.labs.lab4;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public  class TollFeeCalculator {
 
-    public TollFeeCalculator(String inputFile) {
+    public TollFeeCalculator(String inputFile){
         try {
             Scanner sc = new Scanner(new File(inputFile));
-            String[] dateStrings = sc.nextLine().split(", ");
-            LocalDateTime[] dates = new LocalDateTime[dateStrings.length]; //-1 delete
-            for(int i = 0; i < dates.length; i++) {
-                dates[i] = LocalDateTime.parse(dateStrings[i], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            try {
+                String[] dateStrings = sc.nextLine().split(", ");
+                LocalDateTime[] dates = new LocalDateTime[dateStrings.length]; //deleted -1
+                for (int i = 0; i < dates.length; i++) {
+                    dates[i] = LocalDateTime.parse(dateStrings[i], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                }
+                System.out.println("The total fee for the inputfile is" + getTotalFeeCost(dates));
+            } finally {
+                sc.close(); //Added sc.close();
             }
-            System.out.println("The total fee for the inputfile is" + getTotalFeeCost(dates));
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.err.println("Could not read file " + inputFile);
+        } catch (NoSuchElementException e) {
+            System.err.println("Can't show any data, probably a empty file, Check please");
+        } catch (DateTimeParseException e) {
+            System.err.println("Dates is incorrect");
+
         }
     }
-
 
 
     public static int getTotalFeeCost(LocalDateTime[] dates) {
