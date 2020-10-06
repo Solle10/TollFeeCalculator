@@ -60,12 +60,23 @@ public class TollFeeCalculatorTests {
 
         LocalDateTime tollFreeJuly = LocalDateTime.parse("2020-07-01 10:05", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         assertTrue(TollFeeCalculator.isTollFreeDate(tollFreeJuly));
-    }
-    }
-        /*@Test
-                @DisplayName("Tests if each date in the inputFile is being accounted for")
-                void testIfDatesAreMissing() throws FileNotFoundException {
-}
+        
+                                                                       
+@Test                                                          
+    @DisplayName("TestExceptions")                         
+    void TestExceptions() {                                    
+    try {                                                      
+        try {                                                  
+            new TollFeeCalculator("Data/Wrongdates.txt");      
+        } catch (NoSuchElementException e) {                   
+            System.err.println(e);                             
+            assertNull(e);                                     
+                     }                                         
+                     new TollFeeCalculator("Data/Emptyfile.txt"
+                }catch(DateTimeParseException e) {             
+                   System.err.println(e);                      
+                             assertNull(e);      }  }}         
+    
 
 
 
