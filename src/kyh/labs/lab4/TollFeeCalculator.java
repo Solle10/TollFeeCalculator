@@ -10,9 +10,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public  class TollFeeCalculator {
+public class TollFeeCalculator {
 
-    public TollFeeCalculator(String inputFile){
+    public TollFeeCalculator(String inputFile) {
         try {
             Scanner sc = new Scanner(new File(inputFile));
             try {
@@ -40,16 +40,17 @@ public  class TollFeeCalculator {
     public static int getTotalFeeCost(LocalDateTime[] dates) {
         int totalFee = 0;
         LocalDateTime intervalStart = dates[0];
-        for(LocalDateTime date: dates) {
+        for (LocalDateTime date : dates) {
             System.out.println(date.toString());
             long diffInMinutes = intervalStart.until(date, ChronoUnit.MINUTES);
-            if(diffInMinutes > 60) {
+            if (diffInMinutes > 60) {
                 totalFee += getTollFeePerPassing(date);
                 intervalStart = date;
             } else {
                 totalFee += Math.max(getTollFeePerPassing(date), getTollFeePerPassing(intervalStart));
             }
         }
+
         return Math.min(totalFee, 60);  //Changing from Math.max to Math.min
     }
 
@@ -77,7 +78,6 @@ public  class TollFeeCalculator {
 
         new TollFeeCalculator("Data/Lab4.txt");
     }
-
 
 
 }
