@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class TollFeeCalculator {
 
 
-
     public TollFeeCalculator(String inputFile) {
         try {
             Scanner sc = new Scanner(new File(inputFile));
@@ -30,7 +29,7 @@ public class TollFeeCalculator {
         } catch (IOException e) {
             System.err.println("Could not read the file " + inputFile);
 
-        } finally{
+        } finally {
             System.out.println("Closed");
         }
     }
@@ -40,10 +39,10 @@ public class TollFeeCalculator {
         int totalFee = 0;
         int feePerHour = 0;
         LocalDateTime intervalStart = dates[0];
-        for(LocalDateTime date: dates) {
+        for (LocalDateTime date : dates) {
             long diffInMinutes = intervalStart.until(date, ChronoUnit.MINUTES);
             int fee = 0;
-            if(diffInMinutes >= 60) {
+            if (diffInMinutes >= 60) {
                 feePerHour = 0;
                 intervalStart = date;
                 totalFee += getTollFeePerPassing(date);
@@ -51,7 +50,7 @@ public class TollFeeCalculator {
                 feePerHour = Math.max(getTollFeePerPassing(date), feePerHour);
                 totalFee += fee;
             }
-            System.out.println(date.toString() +"\n" + "Fee: " + getTollFeePerPassing(date)+ "\n" + "---------" );
+            System.out.println(date.toString() + "\n" + "Fee: " + getTollFeePerPassing(date) + "\n" + "---------");
         }
 
         return Math.min(totalFee + feePerHour, 60);//changed to Math.min
@@ -63,10 +62,10 @@ public class TollFeeCalculator {
         int hour = date.getHour();
         int minute = date.getMinute();
         if (hour == 6 && minute <= 29) return 8;
-        else if (hour == 6 ) return 13;
+        else if (hour == 6) return 13;
         else if (hour == 7) return 18;
-        else if (hour == 8 && minute<= 29) return 13; //bug
-        else if (hour >= 8 && hour <15) return 8;
+        else if (hour == 8 && minute <= 29) return 13; //bug
+        else if (hour >= 8 && hour < 15) return 8;
         else if (hour == 15 && minute <= 29) return 13;//bug
         else if (hour == 15 || hour == 16) return 18;
         else if (hour == 17) return 13;
