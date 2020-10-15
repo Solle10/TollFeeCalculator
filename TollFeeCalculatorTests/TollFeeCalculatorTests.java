@@ -4,30 +4,31 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TollFeeCalculatorTests {
 
 
+
+
     @Test
-    @DisplayName("Testing Maximal Cost per day")
-    void maxcost() {
-        LocalDateTime[] testDates = new LocalDateTime[6];
-        testDates[0] = LocalDateTime.parse("2020-06-30 06:15", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 8
-        testDates[1] = LocalDateTime.parse("2020-06-30 06:45", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 13
-        testDates[2] = LocalDateTime.parse("2020-06-30 07:15", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 18
-        testDates[3] = LocalDateTime.parse("2020-06-30 07:18", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 18
-        testDates[4] = LocalDateTime.parse("2020-06-30 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 13
-        testDates[5] = LocalDateTime.parse("2020-06-30 15:15", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //8
+    void getMaximalCost() {
+        LocalDateTime[] date = new LocalDateTime[6];
+        date[0] = LocalDateTime.parse("2020-06-30 06:05", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 8
+        date[1] = LocalDateTime.parse("2020-06-30 07:10", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 18
+        date[2] = LocalDateTime.parse("2020-06-30 08:20", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 13
+        date[3] = LocalDateTime.parse("2020-06-30 09:30", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 8
+        date[4] = LocalDateTime.parse("2020-06-30 15:05", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 13
+        date[5] = LocalDateTime.parse("2020-06-30 16:15", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); // 18 totalFee = 78
 
-
-        assertEquals(60, TollFeeCalculator.getTotalFeeCost(testDates));//
+        assertEquals(60, TollFeeCalculator.getTotalFeeCost(date));
     }
 
 
@@ -81,42 +82,44 @@ public class TollFeeCalculatorTests {
     }
 
 
-    @Test
-    @DisplayName("test if file was empty")
-    void TestExpections() {
-        try {
-            new TollFeeCalculator("Data/Emptyfile.txt");
-        } catch (DateTimeParseException e) {
-            System.err.println(e);
-            assertNull(e);
-        }
-    }
 
     @Test
-    @DisplayName("Test first passing")
-    void TestFirstPassing() throws DateTimeParseException {
+    @DisplayName("Test two passing")
+    void TestFirstPassing()  {
         LocalDateTime[] date = new LocalDateTime[2];
         date[0] = LocalDateTime.parse("2020-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        date[1] = LocalDateTime.parse("2020-06-01 12:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        date[1] = LocalDateTime.parse("2020-06-01 10:59", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
-        assertEquals(16, TollFeeCalculator.getTotalFeeCost(date));
+        assertEquals(8, TollFeeCalculator.getTotalFeeCost(date));
 
+    }
+    @Test
+    @DisplayName("Testing if Date is tollFree or not")
+    void isTollFreeDate2() {
+        LocalDateTime date = LocalDateTime.parse("2020-06-01 10:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        assertFalse(TollFeeCalculator.isTollFreeDate(date));
     }
 
 
     @Test
-    void getTotalFeeCostOver60() {
-        LocalDateTime[] date = new LocalDateTime[6];
-        date[0] = LocalDateTime.parse("2020-06-01 06:34", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        date[1] = LocalDateTime.parse("2020-06-01 08:52", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        date[2] = LocalDateTime.parse("2020-06-01 10:13", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        date[3] = LocalDateTime.parse("2020-06-01 14:34", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-        date[4] = LocalDateTime.parse("2020-06-01 16:25", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    void checkTotalCostUnderSixty() {
+        LocalDateTime[] date = new LocalDateTime[8];
+
+        date[0] = LocalDateTime.parse("2020-06-30 10:13", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[1] = LocalDateTime.parse("2020-06-30 10:25", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[2] = LocalDateTime.parse("2020-06-30 14:05", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[3] = LocalDateTime.parse("2020-06-30 15:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[4] = LocalDateTime.parse("2020-06-30 15:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[5] = LocalDateTime.parse("2020-06-30 15:02", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[6] = LocalDateTime.parse("2020-06-30 16:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+        date[7] = LocalDateTime.parse("2020-06-30 17:02", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")); //
+
+        assertEquals(39, TollFeeCalculator.getTotalFeeCost(date));
 
     }
 
     @Test
-    @DisplayName("Checkingarraylist")
+    @DisplayName("Checkingarraylist when testing length-1")
     void CheckArrayLength() {
         LocalDateTime[] date = new LocalDateTime[6];
         date[0] = LocalDateTime.parse("2020-06-01 00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));

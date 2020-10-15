@@ -1,71 +1,78 @@
 package kyh.labs.lab4;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class TollFeeCalculator {
 
+
+
     public TollFeeCalculator(String inputFile) {
         try {
             Scanner sc = new Scanner(new File(inputFile));
-            try {
-                String[] dateStrings = sc.nextLine().split(", ");
-                LocalDateTime[] dates = new LocalDateTime[dateStrings.length]; //deleted -1
-                for (int i = 0; i < dates.length; i++) {
-                    dates[i] = LocalDateTime.parse(dateStrings[i], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            String[] dateStrings = sc.nextLine().split(", ");
+            LocalDateTime[] dates = new LocalDateTime[dateStrings.length];
+            for (int i = 0; i < dates.length; i++) {
+                dates[i] = LocalDateTime.parse(dateStrings[i], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+                //ToDo Bug #6.
+                int dayOne = dates[0].getDayOfYear();
+                if (dates[i].getDayOfYear() != dayOne) {
                 }
-                System.out.println("The total fee for the inputfile is" + getTotalFeeCost(dates));
-            } finally {
-                sc.close(); //Added sc.close();
             }
-        } catch (IOException e) {
-            System.err.println("Could not read file " + inputFile);
-        } catch (NoSuchElementException e) {
-            System.err.println("Can't show any data, probably a empty file, Check please");
+            //ToDO Bug #8.
+            sc.close();
+            System.out.println("The total fee for the inputfile is " + getTotalFeeCost(dates));
         } catch (DateTimeParseException e) {
-            System.err.println("Dates is incorrect");
+            System.err.println("Wrong dates  " + e + " Please try again!");
+        } catch (IOException e) {
+            System.err.println("Could not read the file " + inputFile);
 
-
+        } finally{
+            System.out.println("Closed");
         }
     }
 
-
+    //ToDo Bug #3.
     public static int getTotalFeeCost(LocalDateTime[] dates) {
         int totalFee = 0;
+        int feePerHour = 0;
         LocalDateTime intervalStart = dates[0];
-        for (LocalDateTime date : dates) {
-            System.out.println(date.toString());
+        for(LocalDateTime date: dates) {
             long diffInMinutes = intervalStart.until(date, ChronoUnit.MINUTES);
-            if (diffInMinutes > 60) {
-                totalFee += getTollFeePerPassing(date);
+            int fee = 0;
+            //Todo Bug #5.
+            if(diffInMinutes >= 60) {
+                feePerHour = 0;
                 intervalStart = date;
+                totalFee += getTollFeePerPassing(date);
             } else {
-                totalFee += Math.max(getTollFeePerPassing(date), getTollFeePerPassing(intervalStart));
+                feePerHour = Math.max(getTollFeePerPassing(date), feePerHour);
+                totalFee += fee;
             }
+            System.out.println(date.toString() +"\n" + "Fee: " + getTollFeePerPassing(date)+ "\n" + "---------" );
         }
-
-        return Math.min(totalFee, 60);  //Changing from Math.max to Math.min
+        //Todo Bug #2.
+        return Math.min(totalFee + feePerHour, 60);
     }
 
+    //ToDo Bug #1. (Bug #9 remove minutes in if / else if?)
     public static int getTollFeePerPassing(LocalDateTime date) {
         if (isTollFreeDate(date)) return 0;
         int hour = date.getHour();
         int minute = date.getMinute();
         if (hour == 6 && minute <= 29) return 8;
-        else if (hour == 6 && minute <= 59) return 13;
-        else if (hour == 7 && minute <= 59) return 18;
-        else if (hour == 8 && minute <= 29) return 13;
-        else if (hour >= 8 && hour <= 14 && minute <= 59) return 8; // bug
+        else if (hour == 6 ) return 13;
+        else if (hour == 7) return 18;
+        else if (hour == 8 && minute<= 29) return 13;
+        else if (hour >= 8 && hour <15) return 8;
         else if (hour == 15 && minute <= 29) return 13;
-        else if (hour >= 15 && hour <= 16) return 18; // bug
-        else if (hour == 17 && minute <= 59) return 13;
+        else if (hour == 15 || hour == 16) return 18;
+        else if (hour == 17) return 13;
         else if (hour == 18 && minute <= 29) return 8;
         else return 0;
     }
@@ -75,9 +82,6 @@ public class TollFeeCalculator {
     }
 
     public static void main(String[] args) {
-
         new TollFeeCalculator("Data/Lab4.txt");
     }
-
-
 }
