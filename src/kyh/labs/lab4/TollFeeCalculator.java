@@ -16,15 +16,13 @@ public class TollFeeCalculator {
         try {
             Scanner sc = new Scanner(new File(inputFile));
             String[] dateStrings = sc.nextLine().split(", ");
-            LocalDateTime[] dates = new LocalDateTime[dateStrings.length];
+            LocalDateTime[] dates = new LocalDateTime[dateStrings.length]; //deleted -length
             for (int i = 0; i < dates.length; i++) {
                 dates[i] = LocalDateTime.parse(dateStrings[i], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-                //ToDo Bug #6.
                 int dayOne = dates[0].getDayOfYear();
                 if (dates[i].getDayOfYear() != dayOne) {
                 }
             }
-            //ToDO Bug #8.
             sc.close();
             System.out.println("The total fee for the inputfile is " + getTotalFeeCost(dates));
         } catch (DateTimeParseException e) {
@@ -37,7 +35,7 @@ public class TollFeeCalculator {
         }
     }
 
-    //ToDo Bug #3.
+
     public static int getTotalFeeCost(LocalDateTime[] dates) {
         int totalFee = 0;
         int feePerHour = 0;
@@ -45,7 +43,6 @@ public class TollFeeCalculator {
         for(LocalDateTime date: dates) {
             long diffInMinutes = intervalStart.until(date, ChronoUnit.MINUTES);
             int fee = 0;
-            //Todo Bug #5.
             if(diffInMinutes >= 60) {
                 feePerHour = 0;
                 intervalStart = date;
@@ -56,11 +53,11 @@ public class TollFeeCalculator {
             }
             System.out.println(date.toString() +"\n" + "Fee: " + getTollFeePerPassing(date)+ "\n" + "---------" );
         }
-        //Todo Bug #2.
-        return Math.min(totalFee + feePerHour, 60);
+
+        return Math.min(totalFee + feePerHour, 60);//changed to Math.min
     }
 
-    //ToDo Bug #1. (Bug #9 remove minutes in if / else if?)
+
     public static int getTollFeePerPassing(LocalDateTime date) {
         if (isTollFreeDate(date)) return 0;
         int hour = date.getHour();
@@ -68,9 +65,9 @@ public class TollFeeCalculator {
         if (hour == 6 && minute <= 29) return 8;
         else if (hour == 6 ) return 13;
         else if (hour == 7) return 18;
-        else if (hour == 8 && minute<= 29) return 13;
+        else if (hour == 8 && minute<= 29) return 13; //bug
         else if (hour >= 8 && hour <15) return 8;
-        else if (hour == 15 && minute <= 29) return 13;
+        else if (hour == 15 && minute <= 29) return 13;//bug
         else if (hour == 15 || hour == 16) return 18;
         else if (hour == 17) return 13;
         else if (hour == 18 && minute <= 29) return 8;
