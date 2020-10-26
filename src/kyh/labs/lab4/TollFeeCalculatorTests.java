@@ -4,12 +4,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,12 +67,14 @@ public class TollFeeCalculatorTests {
     }
 
     @Test
-    @DisplayName("Test if error prints")
-    void Testprint() {
+    @DisplayName("Test if error prints if file is wrong")
+    void readSystemError() {
         ByteArrayOutputStream errContent = new ByteArrayOutputStream();
         System.setErr(new PrintStream(errContent));
+        TollFeeCalculator TollFeeCalculator = new TollFeeCalculator("Data/Lab5.txt");
 
-        assertEquals("Utskrift skickat till System.err", errContent.toString().trim());
+
+        assertEquals("File not found Data/Lab5.txt", errContent.toString().trim());
 
     }
 
