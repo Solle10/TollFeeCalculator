@@ -1,6 +1,7 @@
 package kyh.labs.lab4;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,7 +28,7 @@ public class TollFeeCalculator {
         } catch (DateTimeParseException e) {
             System.err.println("Wrong dates  " + e + " Please try again!");
         } catch (IOException e) {
-            System.err.println("Could not read the file " + inputFile);
+            System.err.println("File not found " + inputFile);
 
         } finally {
             System.out.println("Closed");
@@ -79,5 +80,7 @@ public class TollFeeCalculator {
 
     public static void main(String[] args) {
         new TollFeeCalculator("Data/Lab4.txt");
+
+
     }
 }
