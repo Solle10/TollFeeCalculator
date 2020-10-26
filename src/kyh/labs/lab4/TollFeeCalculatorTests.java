@@ -73,7 +73,6 @@ public class TollFeeCalculatorTests {
         System.setErr(new PrintStream(errContent));
         TollFeeCalculator TollFeeCalculator = new TollFeeCalculator("Data/Lab5.txt");
 
-
         assertEquals("File not found Data/Lab5.txt", errContent.toString().trim());
 
     }
